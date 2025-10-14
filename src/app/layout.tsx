@@ -10,6 +10,7 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 import UserSync from "@/components/UserSync";
+import {Toaster} from "react-hot-toast"
 import TanStackProviders from "@/components/providers/TanStackProvider";
 
 const geistSans = Geist({
@@ -49,6 +50,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
         <UserSync/>
+        <Toaster 
+        position="bottom-right"
+        reverseOrder={false}/>
         {children}
       </body>
     </html>
