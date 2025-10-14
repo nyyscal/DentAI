@@ -4,6 +4,7 @@ import { Gender } from "@prisma/client"
 import { prisma } from "../prisma"
 import { generateAvatar } from "../utils"
 import { revalidatePath } from "next/cache"
+import { currentUser } from "@clerk/nextjs/server"
 
 export async function getDoctors(){
   try {
@@ -48,5 +49,49 @@ export async function createDoctor(input: CreateDoctorInput){
       throw new Error("A doctor with this email already exists.")
     }
     throw new Error("Failed to create doctor.")
+  }
+}
+
+interface UpdateDoctorInput extends Partial<CreateDoctorInput>{
+  id:string;
+}
+
+export async function updateDoctor(input:UpdateDoctorInput){
+  try {
+    if(!input.name || !input.email) throw new Error("Name and email are required.")
+
+      const currentDoctor = await prisma.doctor.findUnique({
+        where:{
+          id:input.id,
+        },
+        select:{
+          email:true,
+        }
+      })
+      if(!currentDoctor) throw new Error("Doctor not found.")
+      
+      if(input.email !== currentDoctor.email){
+        const existingDoctor = await prisma.doctor.findUnique({
+          where:{email: input.email}
+        })
+
+        if(existingDoctor){
+          throw new Error("A doctor with the email already exists in the system.")
+        }
+      }
+        const doctor = await prisma.doctor.update({
+          where: {id: input.id},
+          data:{
+            name: input.name,
+            email: input.email,
+            phone: input.email,
+            gender: input.gender,
+            speciality: input.speciality,
+            isActive: input.isActive,
+          }
+        })
+      return doctor 
+  } catch (error) {
+    
   }
 }

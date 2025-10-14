@@ -6,16 +6,24 @@ import { Button } from '../ui/button'
 import Image from 'next/image'
 import { Badge } from '../ui/badge'
 import AddDoctorDialog from '@/app/admin/AddDoctorDialog'
+import { Doctor } from '@prisma/client'
+import EditDoctorDialog from '@/app/admin/EditDoctorDialog'
 
 const DoctorsManagement = () => {
   const {data:doctors = []} = useGetDoctors()
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen]= useState(false)
-  const [selectedDoctor,setSelectedDoctor] = useState(null)
+  const [selectedDoctor,setSelectedDoctor] = useState<Doctor | null>(null)
 
-  const handleEditDoctor = async() =>{}
-  const handleCloseEditDialog = async() =>{}
+  const handleEditDoctor = async(doctor:Doctor) =>{
+    setSelectedDoctor(doctor)
+    setIsEditDialogOpen(true)
+  }
+  const handleCloseEditDialog = async() =>{
+    setIsEditDialogOpen(false)
+    setSelectedDoctor(null)
+  }
 
   return (
     <>
@@ -71,11 +79,11 @@ const DoctorsManagement = () => {
                     <div className='text-xs text-muted-foreground'>Appointments</div>
                   </div>
                   {doctor.isActive ? (
-                    <Badge className='bg-green-100 text-green-800 hover:bg-green-100'>active</Badge>
+                    <Badge className='bg-green-100 text-green-800 hover:bg-green-100'>Active</Badge>
                   ):(
-                    <Badge variant="secondary">Inactive</Badge>
+                    <Badge className='bg-red-300 text-red-800 hover:bg-red-100' variant="secondary">Inactive</Badge>
                   )}
-                  <Button size={"sm"} variant={"outline"} className='h-8 px-3' onClick={()=> handleEditDoctor()}>
+                  <Button size={"sm"} variant={"outline"} className='h-8 px-3' onClick={()=> handleEditDoctor(doctor)}>
                     <EditIcon className='size-4 mr-1'/>
                     Edit
                   </Button>
@@ -87,6 +95,8 @@ const DoctorsManagement = () => {
       </Card>
 
       <AddDoctorDialog isOpen={isAddDialogOpen} onClose={()=>setIsAddDialogOpen(false)}/>
+      <EditDoctorDialog isOpen={isEditDialogOpen} onClose={handleCloseEditDialog}
+       doctor={selectedDoctor} key={selectedDoctor?.id}/>
     </>
   )
 }
