@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar'
 import { PricingTable } from '@clerk/nextjs'
-import { currentUser } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { CrownIcon } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -8,6 +8,10 @@ import React from 'react'
 const ProPage = async() => {
   const user = await currentUser()
   if(!user) redirect("/")
+
+    const {has} = await auth()
+    const hasProPlan = has({plan:"ai_basics"}) || has({plan:"ai_pro"})
+    // console.log(hasProPlan)
   return (
     <>
       <Navbar />
