@@ -1,6 +1,6 @@
 "use client"
 
-import { createDoctor, getDoctors, updateDoctor } from "@/lib/actions/doctors"
+import { createDoctor, getAvailableDoctors, getDoctors, updateDoctor } from "@/lib/actions/doctors"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 
@@ -51,4 +51,12 @@ export function useUpdateDoctor(){
     }
   })
   return result
+}
+
+export function useAvailableDoctors(){
+  const result = useQuery({
+    queryKey:["getAvailableDoctors"],
+    queryFn: getAvailableDoctors,
+  })
+  return result;
 }
