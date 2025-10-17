@@ -38,6 +38,7 @@ export function useUpdateDoctor(){
     mutationFn: updateDoctor,
     onSuccess:()=>{
       queryClient.invalidateQueries({queryKey:["getDoctors"]}),
+      queryClient.invalidateQueries({queryKey:["getAvailableDoctors"]}),
       toast.success("Doctor created succesfully.",{ 
       style: {
       borderRadius: '10px',
